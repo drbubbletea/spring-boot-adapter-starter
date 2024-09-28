@@ -1,5 +1,6 @@
-package net.timeboxing.spring.adapter;
+package net.timeboxing.spring.adapter.spring;
 
+import net.timeboxing.spring.adapter.Adapter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +13,12 @@ import java.util.Optional;
 @Aspect
 @Component
 public class SpringAdapterAspect {
+
+    private final Adapter adapter;
+
+    public SpringAdapterAspect(Adapter adapter) {
+        this.adapter = adapter;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(SpringAdapterAspect.class);
 

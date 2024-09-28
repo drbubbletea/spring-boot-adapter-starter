@@ -2,6 +2,7 @@ package net.timeboxing.spring.adapter;
 
 import net.timeboxing.spring.adapter.testimpl.DefaultUserExporter;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class SpringConfigurationTest {
     @Autowired
     private AdapterLibrary library;
 
+    @DisplayName("Spring configuration startup finds AdaptedFrom classes")
     @Test
     public void canScanForAdaptedFromClasses() {
         Set<String> names = library.adaptedFromBeanDefinitions().stream().map(BeanDefinition::getBeanClassName).collect(Collectors.toSet());
