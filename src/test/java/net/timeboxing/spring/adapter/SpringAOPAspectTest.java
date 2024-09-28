@@ -3,7 +3,6 @@ package net.timeboxing.spring.adapter;
 
 import net.timeboxing.spring.adapter.testimpl.ComponentImpl;
 import net.timeboxing.spring.adapter.testimpl.Exporter;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,18 @@ public class SpringAOPAspectTest {
     @Autowired
     private ComponentImpl component;
 
-    @DisplayName("Adaptable invocation on Spring-managed bean does not throw an exception")
     @Test
-    public void aspectTriggersOnSpringManagedBean() {
+    public void aspectTriggersOnOneParameterInvocation() {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class));
+    }
+
+    @Test
+    public void aspectTriggersOnTwoParameterInvocation() {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class, AdapterPurpose.class));
+    }
+
+    @Test
+    public void aspectTriggersOnThreeParameterInvocation() {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class, AdapterPurpose.class, "DEFAULT"));
     }
 }

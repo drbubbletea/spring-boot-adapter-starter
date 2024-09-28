@@ -35,7 +35,6 @@ public class SpringAdapterAspect {
         } else if (2 == arguments) {
             return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], AdapterPurpose.class, pjp.getArgs()[1]);
         } else if (3 == arguments) {
-            // TODO: check cast
             return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], (Class<? extends Enum<?>>) pjp.getArgs()[1], pjp.getArgs()[2]);
         }else {
             throw new AdapterException("Unsupported number of arguments: " + arguments);
