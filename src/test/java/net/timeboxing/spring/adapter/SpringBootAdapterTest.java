@@ -3,6 +3,7 @@ package net.timeboxing.spring.adapter;
 import net.timeboxing.spring.adapter.testimpl.DefaultUser;
 import net.timeboxing.spring.adapter.testimpl.Exporter;
 import net.timeboxing.spring.adapter.testimpl.User;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,13 @@ public class SpringBootAdapterTest {
         @Scope(BeanDefinition.SCOPE_PROTOTYPE)
         public User createUser(Integer id) {
             return new DefaultUser(id);
-//            Object proxy = Enhancer.create(beanClass, new MyInterceptor());
-//            return Enhancer.create(beanClass);
         }
     }
 
-        @Autowired
+    @Autowired
     private TestFactory userFactory;
 
-//    @Autowired
-//    private ObjectProvider<DefaultUser> userFactory;
-
+    @DisplayName("Spring prototype type bean triggers adapt")
     @Test
     public void springFactoryPrototypeBeanTriggersAdapt() {
         User user = userFactory.createUser(1);

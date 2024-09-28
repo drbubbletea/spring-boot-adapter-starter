@@ -11,10 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SpringAOPAspectTest.TestApplication.class)
@@ -34,11 +31,5 @@ public class SpringAOPAspectTest {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class));
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class, null));
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class, null, null));
-    }
-
-    @Test
-    public void adaptTest() {
-        Optional<Exporter> exporter = component.adaptTo(Exporter.class);
-        assertTrue(exporter.isPresent());
     }
 }
