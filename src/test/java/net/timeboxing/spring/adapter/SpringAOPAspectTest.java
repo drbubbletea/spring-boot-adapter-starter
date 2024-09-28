@@ -29,5 +29,7 @@ public class SpringAOPAspectTest {
     @Test
     public void aspectTriggersOnSpringManagedBean() {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class));
+        assertDoesNotThrow(() -> component.adaptTo(Exporter.class, null));
+        assertDoesNotThrow(() -> component.adaptTo(Exporter.class, null, null));
     }
 }
