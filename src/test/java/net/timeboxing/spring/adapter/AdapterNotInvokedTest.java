@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AdapterTest {
+public class AdapterNotInvokedTest {
 
     @DisplayName("Adapter invocation on non-managed bean throws helpful exception")
     @Test()
