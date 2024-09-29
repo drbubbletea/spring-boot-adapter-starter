@@ -42,7 +42,7 @@ public class SpringAdaptedFromFactoryTest {
     @Test
     public void canConstructInstance() {
         User user = new DefaultUser(1);
-        DefaultUserExporter result = (DefaultUserExporter) factory.create(user, Exporter.class, AdapterPurpose.class, "DEFAULT");
+        DefaultUserExporter result = (DefaultUserExporter) factory.create(user);
         Assertions.assertTrue(Enhancer.isEnhanced(result.getClass()));
         Assertions.assertEquals(DefaultUserExporter.class, ClassUtils.getUserClass(result));
         // @Source-annotated object

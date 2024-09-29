@@ -43,7 +43,7 @@ public class DefaultAdaptedFromFactory implements AdaptedFromFactory {
     }
 
     @Override
-    public Object create(Object source, Class<?> targetClass, Class<? extends Enum<?>> purposeEnum, Object purpose) {
+    public Object create(Object source) {
         try {
             Object[] parameters = getParameters(source);
             Object created = constructor.newInstance(parameters);
