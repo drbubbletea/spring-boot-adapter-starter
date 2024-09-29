@@ -1,5 +1,7 @@
 package net.timeboxing.spring.adapter.testimpl;
 
-public interface Exporter {
+import net.timeboxing.spring.adapter.Adaptable;
+
+public interface Exporter extends Adaptable {
     String export();
 }

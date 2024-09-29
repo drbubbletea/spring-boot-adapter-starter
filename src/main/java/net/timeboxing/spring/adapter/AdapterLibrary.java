@@ -1,10 +1,10 @@
 package net.timeboxing.spring.adapter;
 
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 
 import java.util.Set;
 
 public interface AdapterLibrary {
 
-    Set<BeanDefinition> adaptedFromBeanDefinitions();
+    Set<AnnotatedBeanDefinition> adaptedFromBeanDefinitions();
 }
