@@ -7,4 +7,6 @@ import java.util.Set;
 public interface AdapterLibrary {
 
     Set<AnnotatedBeanDefinition> adaptedFromBeanDefinitions();
+
+    Set<AdaptedFromFactory> adaptedFromFactories();
 }

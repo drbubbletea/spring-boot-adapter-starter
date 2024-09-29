@@ -1,21 +1,23 @@
 package net.timeboxing.spring.adapter;
 
-import net.timeboxing.spring.adapter.impl.DefaultAdaptedFromFactory;
-import net.timeboxing.spring.adapter.testimpl.*;
+import net.timeboxing.spring.adapter.testimpl.DefaultUser;
+import net.timeboxing.spring.adapter.testimpl.Exporter;
+import net.timeboxing.spring.adapter.testimpl.TestService;
+import net.timeboxing.spring.adapter.testimpl.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {SpringAdapterTest.TestApplication.class, SpringAdapterTest.TestConfiguration.class})
+@SpringBootTest(classes = {SpringAdapterTest.TestApplication.class, SpringAdapterTest.TestFactory.class})
 public class SpringAdapterTest {
 
     @SpringBootApplication
@@ -34,24 +36,25 @@ public class SpringAdapterTest {
     }
 
 
-    @Configuration
-    static class TestConfiguration {
-
-        @Bean
-        public AdaptedFromFactory factory(ApplicationContext context) {
-            return new DefaultAdaptedFromFactory(context, DefaultUserExporter.class, User.class, Exporter.class, AdapterPurpose.class, "DEFAULT");
-        }
-    }
+//    @Configuration
+//    static class TestConfiguration {
+//
+//        @Bean
+//        public AdaptedFromFactory factory(ApplicationContext context) {
+//            return new DefaultAdaptedFromFactory(context, DefaultUserExporter.class, User.class, Exporter.class, AdapterPurpose.class, "DEFAULT");
+//        }
+//    }
 
     @Autowired
-    private AdaptedFromFactory factory;
+    private TestFactory factory;
 
     @Autowired
     private TestService testService;
 
     @Test
     public void canAdapt() {
-        User user = new DefaultUser(1);
+        User user = factory.createUser(5);
         Exporter result = user.adaptTo(Exporter.class, AdapterPurpose.DEFAULT).orElseThrow();
+        Assertions.assertEquals("Testing", result.export());
     }
 }

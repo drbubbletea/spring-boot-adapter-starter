@@ -1,20 +1,31 @@
 package net.timeboxing.spring.adapter.impl;
 
 import net.timeboxing.spring.adapter.AdaptedFrom;
+import net.timeboxing.spring.adapter.AdaptedFromFactory;
 import net.timeboxing.spring.adapter.AdapterLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class DefaultAdapterLibrary implements AdapterLibrary {
 
+    private final Logger LOG = LoggerFactory.getLogger(DefaultAdapterLibrary.class);
+
     private final Set<AnnotatedBeanDefinition> adaptedFromBeanDefinitions;
 
-    public DefaultAdapterLibrary() {
+    private final Set<AdaptedFromFactory> factories;
+
+    public DefaultAdapterLibrary(ApplicationContext context) {
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(AdaptedFrom.class));
         Set<BeanDefinition> definitions = scanner.findCandidateComponents("net.timeboxing");
@@ -26,6 +37,26 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
             }
         }
         this.adaptedFromBeanDefinitions = Set.copyOf(annotatedBeanDefinitions);
+
+        Set<AdaptedFromFactory> adaptedFromFactories = new LinkedHashSet<>();
+        for (AnnotatedBeanDefinition definition: adaptedFromBeanDefinitions) {
+            Class<?> adaptedFromClass;
+            try {
+                adaptedFromClass = Class.forName(definition.getBeanClassName());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            AnnotationMetadata annotationMetadata = definition.getMetadata();
+            MergedAnnotation<AdaptedFrom> adaptedFrom = annotationMetadata.getAnnotations().get(AdaptedFrom.class);
+            Class<?> from = adaptedFrom.getClass("from");
+            Class<?> to = adaptedFrom.getClass("to");
+            Class<? extends Enum<?>> purposeEnum = (Class<? extends Enum<?>>) adaptedFrom.getClass("purposeEnum");
+            String purposeValue = adaptedFrom.getString("purposeValue");
+            AdaptedFromFactory factory = new DefaultAdaptedFromFactory(context, adaptedFromClass, from, to, purposeEnum, purposeValue);
+            LOG.info("Created AdaptedFromFactory: {}", factory);
+            adaptedFromFactories.add(factory);
+        }
+        this.factories = Set.copyOf(adaptedFromFactories);
     }
 
     @Override
@@ -33,8 +64,8 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
         return adaptedFromBeanDefinitions;
     }
 
-//                AnnotationMetadata annotationMetadata = abd.getMetadata();
-//                MergedAnnotation<AdaptedFrom> adaptedFrom = annotationMetadata.getAnnotations().get(AdaptedFrom.class);
-//                Class<?> from = adaptedFrom.getClass("from");
-//                Class<?> to = adaptedFrom.getClass("to");
+    @Override
+    public Set<AdaptedFromFactory> adaptedFromFactories() {
+        return factories;
+    }
 }

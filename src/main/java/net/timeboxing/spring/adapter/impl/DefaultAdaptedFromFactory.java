@@ -38,8 +38,22 @@ public class DefaultAdaptedFromFactory implements AdaptedFromFactory {
     }
 
     @Override
+    public String toString() {
+        return "DefaultAdaptedFromFactory{" +
+                "adaptedFromClass=" + adaptedFromClass +
+                ", fromClass=" + fromClass +
+                ", toClass=" + toClass +
+                ", purposeEnum=" + purposeEnum +
+                ", purpose=" + purpose +
+                '}';
+    }
+
+    @Override
     public boolean supports(Class<?> targetClass, Class<? extends Enum<?>> purposeEnum, Object purpose) {
-        return false;
+        boolean targetMatch = toClass.isAssignableFrom(targetClass);
+        boolean enumMatch = purposeEnum.equals(this.purposeEnum);
+        boolean purposeMatch = purpose.equals(this.purpose);
+        return targetMatch && enumMatch && purposeMatch;
     }
 
     @Override

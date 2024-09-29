@@ -32,4 +32,10 @@ public class SpringConfigurationTest {
         Set<String> names = library.adaptedFromBeanDefinitions().stream().map(BeanDefinition::getBeanClassName).collect(Collectors.toSet());
         Assertions.assertTrue(names.contains(DefaultUserExporter.class.getCanonicalName()));
     }
+
+    @DisplayName("AdaptedFrom 'to' targeting Spring-managed bean throws exception")
+    @Test
+    public void targetSpringManagedBeanFails() {
+        Assertions.fail();
+    }
 }
