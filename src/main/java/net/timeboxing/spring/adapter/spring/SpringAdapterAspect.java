@@ -2,7 +2,6 @@ package net.timeboxing.spring.adapter.spring;
 
 import net.timeboxing.spring.adapter.Adapter;
 import net.timeboxing.spring.adapter.AdapterException;
-import net.timeboxing.spring.adapter.AdapterPurpose;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,7 +30,7 @@ public class SpringAdapterAspect {
         LOG.debug("Invoked for {}", pjp.getTarget().getClass().getName());
         int arguments = pjp.getArgs().length;
         if (2 == arguments) {
-            return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], AdapterPurpose.class, pjp.getArgs()[1]);
+            return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], (Class<? extends Enum<?>>) pjp.getArgs()[1].getClass(), pjp.getArgs()[1]);
         } else if (3 == arguments) {
             return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], (Class<? extends Enum<?>>) pjp.getArgs()[1], pjp.getArgs()[2]);
         }else {

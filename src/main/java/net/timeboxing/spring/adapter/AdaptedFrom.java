@@ -15,5 +15,5 @@ public @interface AdaptedFrom {
 
     Class<? extends Enum<?>> purposeEnum() default AdapterPurpose.class;
 
-    String purposeValue() default "DEFAULT";
+    String purposeValue();
 }

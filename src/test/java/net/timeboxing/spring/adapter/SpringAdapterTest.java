@@ -1,5 +1,6 @@
 package net.timeboxing.spring.adapter;
 
+import net.timeboxing.spring.adapter.testimpl.CustomPurpose;
 import net.timeboxing.spring.adapter.testimpl.DefaultUser;
 import net.timeboxing.spring.adapter.testimpl.Exporter;
 import net.timeboxing.spring.adapter.testimpl.User;
@@ -38,9 +39,16 @@ public class SpringAdapterTest {
     private TestFactory factory;
 
     @Test
-    public void adaptMatchingClassPriority1() {
+    public void canAdaptDefaultPurposeEnum() {
         User user = factory.createUser(5);
         Exporter result = user.adaptTo(Exporter.class, AdapterPurpose.DEFAULT).orElseThrow();
         Assertions.assertEquals("Testing", result.export());
+    }
+
+    @Test
+    public void canAdaptCustomPurposeEnum() {
+        User user = factory.createUser(5);
+        Exporter result = user.adaptTo(Exporter.class, CustomPurpose.FOO).orElseThrow();
+        Assertions.assertEquals("CustomFooUser", result.export());
     }
 }

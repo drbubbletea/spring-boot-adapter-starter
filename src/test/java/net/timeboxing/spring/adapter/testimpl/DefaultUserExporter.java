@@ -6,7 +6,7 @@ import net.timeboxing.spring.adapter.AdapterPurpose;
 import net.timeboxing.spring.adapter.Purpose;
 import net.timeboxing.spring.adapter.Source;
 
-@AdaptedFrom(from = DefaultUser.class, to = Exporter.class)
+@AdaptedFrom(from = DefaultUser.class, to = Exporter.class, purposeValue = "DEFAULT")
 public class DefaultUserExporter implements Exporter {
 
     private final TestService testService;
