@@ -2,7 +2,6 @@ package net.timeboxing.spring.adapter;
 
 import net.timeboxing.spring.adapter.testimpl.DefaultUser;
 import net.timeboxing.spring.adapter.testimpl.Exporter;
-import net.timeboxing.spring.adapter.testimpl.TestService;
 import net.timeboxing.spring.adapter.testimpl.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -35,24 +34,11 @@ public class SpringAdapterTest {
         }
     }
 
-
-//    @Configuration
-//    static class TestConfiguration {
-//
-//        @Bean
-//        public AdaptedFromFactory factory(ApplicationContext context) {
-//            return new DefaultAdaptedFromFactory(context, DefaultUserExporter.class, User.class, Exporter.class, AdapterPurpose.class, "DEFAULT");
-//        }
-//    }
-
     @Autowired
     private TestFactory factory;
 
-    @Autowired
-    private TestService testService;
-
     @Test
-    public void canAdapt() {
+    public void adaptMatchingClassPriority1() {
         User user = factory.createUser(5);
         Exporter result = user.adaptTo(Exporter.class, AdapterPurpose.DEFAULT).orElseThrow();
         Assertions.assertEquals("Testing", result.export());

@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
 import java.util.Set;
 
 @Configuration
@@ -20,7 +21,7 @@ public class AdapterConfiguration {
     }
 
     @Bean
-    public Set<AdaptedFromFactory> factories(AdapterLibrary library) {
+    public Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories(AdapterLibrary library) {
         return library.adaptedFromFactories();
     }
 }

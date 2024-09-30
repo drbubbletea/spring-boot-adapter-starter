@@ -7,10 +7,6 @@ import java.util.Optional;
  */
 public interface Adaptable {
 
-    default <T> Optional<T> adaptTo(Class<T> desiredClass) {
-        throw new AdaptNotTriggeredException();
-    }
-
     default <T> Optional<T> adaptTo(Class<T> desiredClass, Object purposeValue) {
         throw new AdaptNotTriggeredException();
     }

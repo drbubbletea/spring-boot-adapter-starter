@@ -30,9 +30,7 @@ public class SpringAdapterAspect {
     public Object adaptableInvocation(ProceedingJoinPoint pjp) {
         LOG.debug("Invoked for {}", pjp.getTarget().getClass().getName());
         int arguments = pjp.getArgs().length;
-        if (1 == arguments) {
-            return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], AdapterPurpose.class, "DEFAULT");
-        } else if (2 == arguments) {
+        if (2 == arguments) {
             return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], AdapterPurpose.class, pjp.getArgs()[1]);
         } else if (3 == arguments) {
             return adapter.adaptTo(pjp.getTarget(), (Class<?>) pjp.getArgs()[0], (Class<? extends Enum<?>>) pjp.getArgs()[1], pjp.getArgs()[2]);

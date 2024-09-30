@@ -45,11 +45,6 @@ public class SpringAOPAspectTest {
     private TestFactory userFactory;
 
     @Test
-    public void aspectTriggersOnOneParameterInvocation() {
-        assertDoesNotThrow(() -> component.adaptTo(Exporter.class));
-    }
-
-    @Test
     public void aspectTriggersOnTwoParameterInvocation() {
         assertDoesNotThrow(() -> component.adaptTo(Exporter.class, AdapterPurpose.class));
     }
@@ -63,6 +58,6 @@ public class SpringAOPAspectTest {
     @Test
     public void springFactoryPrototypeBeanTriggersAdapt() {
         User user = userFactory.createUser(1);
-        assertDoesNotThrow(() -> user.adaptTo(Exporter.class));
+        assertDoesNotThrow(() -> user.adaptTo(Exporter.class, AdapterPurpose.EXPORT));
     }
 }

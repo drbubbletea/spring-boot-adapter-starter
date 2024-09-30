@@ -43,10 +43,12 @@ private Adapter adapter;
 
 // usage for manually created beans
 DefaultUser user = new DefaultUser(5);
-Optional<Exporter> exporter = adapter.adaptTo(user, Exporter.class, AdapterPurpose.class, "EXPORT");
+Optional<Exporter> exporter = adapter.adaptTo(user, Exporter.class, AdapterPurpose.class, AdapterPurpose.EXPORT);
 ```
 
 ## Code
 
 
 ## Motivation
+
+TODO

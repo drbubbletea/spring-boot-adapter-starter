@@ -2,27 +2,91 @@ package net.timeboxing.spring.adapter.impl;
 
 import net.timeboxing.spring.adapter.AdaptedFromFactory;
 import net.timeboxing.spring.adapter.Adapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DefaultAdapter implements Adapter {
 
-    private final Set<AdaptedFromFactory> factories;
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultAdapter.class);
 
-    public DefaultAdapter(Set<AdaptedFromFactory> factories) {
-        this.factories = Set.copyOf(factories);
+    private final Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories;
+    private Map<AdaptedFromFactoryKey, AdaptedFromFactory> keyToFactory = new HashMap<>();
+
+    public DefaultAdapter(Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories) {
+        this.factories = factories;
     }
 
     @Override
     public <T> Optional<T> adaptTo(Object from, Class<T> desiredClass, Class<? extends Enum<?>> purposeEnum, Object purposeValue) {
-        for (AdaptedFromFactory factory: factories) {
-            if (factory.supports(desiredClass, purposeEnum, purposeValue.toString())) {
-                return Optional.of((T) factory.create(from));
+        AdaptedFromFactoryKey key = new AdaptedFromFactoryKey(from.getClass(), desiredClass, purposeEnum, purposeValue);
+        if (!keyToFactory.containsKey(key)) {
+            AdaptedFromFactory factory = getClassFactory(from.getClass(), purposeEnum, desiredClass, purposeValue);
+            if (null == factory) {
+                factory = getInterfaceFactory(from.getClass(), purposeEnum, desiredClass, purposeValue);
+            }
+            keyToFactory.put(key, factory);
+        }
+        if (null != keyToFactory.get(key)) {
+            return Optional.of((T) keyToFactory.get(key).create(from));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private AdaptedFromFactory getClassFactory(Class<?> from, Class<? extends Enum<?>> purposeEnum, Class<?> desiredClass, Object purposeValue) {
+        if (factories.containsKey(purposeEnum)) {
+            for (AdaptedFromFactory factory: factories.get(purposeEnum)) {
+                LOG.info("Checking class {}", from.getName());
+                if (factory.supports(from, desiredClass, purposeEnum, purposeValue.toString())) {
+                    return factory;
+                }
             }
         }
-        return Optional.empty();
+        return null;
+    }
+
+    private AdaptedFromFactory getInterfaceFactory(Class<?> from, Class<? extends Enum<?>> purposeEnum, Class<?> desiredClass, Object purposeValue) {
+        if (factories.containsKey(purposeEnum)) {
+            for (Class<?> fromInterface: from.getInterfaces()) {
+                for (AdaptedFromFactory factory: factories.get(purposeEnum)) {
+                    LOG.info("Checking interface {}", fromInterface.getName());
+                    if (factory.supports(fromInterface, desiredClass, purposeEnum, purposeValue.toString())) {
+                        return factory;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private static class AdaptedFromFactoryKey {
+        private final Class<?> sourceClass;
+        private final Class<?> targetClass;
+        private final Class<? extends Enum<?>> purposeEnum;
+        private final Object purpose;
+
+        public AdaptedFromFactoryKey(Class<?> sourceClass, Class<?> targetClass, Class<? extends Enum<?>> purposeEnum, Object purpose) {
+            this.sourceClass = sourceClass;
+            this.targetClass = targetClass;
+            this.purposeEnum = purposeEnum;
+            this.purpose = purpose;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            AdaptedFromFactoryKey that = (AdaptedFromFactoryKey) o;
+            return Objects.equals(sourceClass, that.sourceClass) && Objects.equals(targetClass, that.targetClass) && Objects.equals(purposeEnum, that.purposeEnum) && Objects.equals(purpose, that.purpose);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(sourceClass, targetClass, purposeEnum, purpose);
+        }
     }
 }

@@ -13,9 +13,7 @@ import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DefaultAdapterLibrary implements AdapterLibrary {
 
@@ -23,7 +21,7 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
 
     private final Set<AnnotatedBeanDefinition> adaptedFromBeanDefinitions;
 
-    private final Set<AdaptedFromFactory> factories;
+    private final Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories;
 
     public DefaultAdapterLibrary(ApplicationContext context) {
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
@@ -38,6 +36,7 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
         }
         this.adaptedFromBeanDefinitions = Set.copyOf(annotatedBeanDefinitions);
 
+        Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> enumFactories = new HashMap<>();
         Set<AdaptedFromFactory> adaptedFromFactories = new LinkedHashSet<>();
         for (AnnotatedBeanDefinition definition: adaptedFromBeanDefinitions) {
             Class<?> adaptedFromClass;
@@ -51,12 +50,16 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
             Class<?> from = adaptedFrom.getClass("from");
             Class<?> to = adaptedFrom.getClass("to");
             Class<? extends Enum<?>> purposeEnum = (Class<? extends Enum<?>>) adaptedFrom.getClass("purposeEnum");
+
             String purposeValue = adaptedFrom.getString("purposeValue");
             AdaptedFromFactory factory = new DefaultAdaptedFromFactory(context, adaptedFromClass, from, to, purposeEnum, purposeValue);
             LOG.info("Created AdaptedFromFactory: {}", factory);
             adaptedFromFactories.add(factory);
+
+            enumFactories.putIfAbsent(purposeEnum, new LinkedHashSet<>());
+            enumFactories.get(purposeEnum).add(factory);
         }
-        this.factories = Set.copyOf(adaptedFromFactories);
+        this.factories = enumFactories;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class DefaultAdapterLibrary implements AdapterLibrary {
     }
 
     @Override
-    public Set<AdaptedFromFactory> adaptedFromFactories() {
+    public Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> adaptedFromFactories() {
         return factories;
     }
 }

@@ -14,6 +14,6 @@ public class AdapterNotInvokedTest {
     @Test()
     public void unmanagedBeanAdaptInvocationThrowsException() {
         User user = new DefaultUser(1);
-        assertThrows(AdaptNotTriggeredException.class, () -> user.adaptTo(Exporter.class));
+        assertThrows(AdaptNotTriggeredException.class, () -> user.adaptTo(Exporter.class, null));
     }
 }
