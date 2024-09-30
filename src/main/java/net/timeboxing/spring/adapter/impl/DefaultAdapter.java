@@ -14,7 +14,7 @@ public class DefaultAdapter implements Adapter {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAdapter.class);
 
     private final Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories;
-    private Map<AdaptedFromFactoryKey, AdaptedFromFactory> keyToFactory = new HashMap<>();
+    private final Map<AdaptedFromFactoryKey, AdaptedFromFactory> keyToFactory = new HashMap<>();
 
     public DefaultAdapter(Map<Class<? extends Enum<?>>, Set<AdaptedFromFactory>> factories) {
         this.factories = factories;
@@ -40,7 +40,7 @@ public class DefaultAdapter implements Adapter {
     private AdaptedFromFactory getClassFactory(Class<?> from, Class<? extends Enum<?>> purposeEnum, Class<?> desiredClass, Object purposeValue) {
         if (factories.containsKey(purposeEnum)) {
             for (AdaptedFromFactory factory: factories.get(purposeEnum)) {
-                LOG.info("Checking class {}", from.getName());
+                LOG.trace("Checking class {}", from.getName());
                 if (factory.supports(from, desiredClass, purposeEnum, purposeValue.toString())) {
                     return factory;
                 }
@@ -53,7 +53,7 @@ public class DefaultAdapter implements Adapter {
         if (factories.containsKey(purposeEnum)) {
             for (Class<?> fromInterface: from.getInterfaces()) {
                 for (AdaptedFromFactory factory: factories.get(purposeEnum)) {
-                    LOG.info("Checking interface {}", fromInterface.getName());
+                    LOG.trace("Checking interface {}", fromInterface.getName());
                     if (factory.supports(fromInterface, desiredClass, purposeEnum, purposeValue.toString())) {
                         return factory;
                     }

@@ -46,9 +46,16 @@ public class SpringAdapterTest {
     }
 
     @Test
-    public void canAdaptCustomPurposeEnum() {
+    public void canAdaptCustomPurposeEnumTwoArguments() {
         User user = factory.createUser(5);
         Exporter result = user.adaptTo(Exporter.class, CustomPurpose.FOO).orElseThrow();
+        Assertions.assertEquals("CustomFooUser", result.export());
+    }
+
+    @Test
+    public void canAdaptCustomPurposeEnumThreeArguments() {
+        User user = factory.createUser(5);
+        Exporter result = user.adaptTo(Exporter.class, CustomPurpose.class, CustomPurpose.FOO).orElseThrow();
         Assertions.assertEquals("CustomFooUser", result.export());
     }
 }

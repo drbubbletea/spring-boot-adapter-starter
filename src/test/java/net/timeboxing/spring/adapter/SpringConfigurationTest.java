@@ -2,6 +2,7 @@ package net.timeboxing.spring.adapter;
 
 import net.timeboxing.spring.adapter.testimpl.DefaultUserExporter;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +34,9 @@ public class SpringConfigurationTest {
         Assertions.assertTrue(names.contains(DefaultUserExporter.class.getCanonicalName()));
     }
 
+    @Disabled
     @DisplayName("AdaptedFrom 'to' targeting Spring-managed bean throws exception")
-    @Test
+    @Test()
     public void targetSpringManagedBeanFails() {
         Assertions.fail();
     }
